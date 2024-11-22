@@ -1,0 +1,9 @@
+@import "@repo/ui/globals.css";
+
+:root {
+  --font-geist-sans: 'GeistSans', sans-serif;
+}
+
+body {
+  font-family: var(--font-geist-sans);
+}
