@@ -1,17 +1,16 @@
-"use client";
+import UserForm from "@/components/UserForm";
+import { api, HydrateClient } from "@/lib/trpc/server";
+import UserList from "@/components/UserList";
 
-import { api } from "@/lib/trpc/client";
-
-export default function Hero() {
-  const { data, isLoading, error } = api.user.getUsers.useQuery();
+export default async function Hero() {
+  void api.user.getUsers();
 
   return (
-    <main className="">
-      {isLoading
-        ? "Loading..."
-        : error
-          ? "Error while fetching the data"
-          : JSON.stringify(data, null, 2)}
-    </main>
+    <HydrateClient>
+      <main className="space-y-4">
+        <UserList />
+        <UserForm />
+      </main>
+    </HydrateClient>
   );
 }

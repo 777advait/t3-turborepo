@@ -1,12 +1,16 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../init";
 
+const users = [
+  { id: 1, name: "John Doe" },
+  { id: 2, name: "Jane Doe" },
+];
+
+
 export const userRouter = createTRPCRouter({
+  
   getUsers: publicProcedure.query(() => {
-    return [
-      { id: 1, name: "John Doe" },
-      { id: 2, name: "Jane Doe" },
-    ];
+    return users;
   }),
 
   addUser: publicProcedure
@@ -17,13 +21,11 @@ export const userRouter = createTRPCRouter({
       })
     )
     .mutation(({ input: { id, name } }) => {
-      // Simulate a db query
-      new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(true);
-        }, 2000);
-      });
 
-      return { id, name };
+      console.log({ id, name });
+
+      users.push({ id, name });
+
+      // return { id, name };
     }),
 });
