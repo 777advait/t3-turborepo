@@ -8,8 +8,8 @@ export default async function Hero() {
   return (
     <HydrateClient>
       <main className="space-y-4">
-        <UserList />
         <UserForm />
+        <UserList />
       </main>
     </HydrateClient>
   );

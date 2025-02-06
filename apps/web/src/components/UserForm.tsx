@@ -1,12 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { api } from "@/lib/trpc/client";
 import { Button } from "@repo/ui/components/button";
+import { Input } from "@repo/ui/components/input";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@repo/ui/components/form";
 
 export default function UserForm() {
-  const [name, setName] = useState("");
-  const [id, setId] = useState<number>(0);
   const utils = api.useUtils();
   const addUser = api.user.addUser.useMutation({
     onSettled: () => {
@@ -14,36 +22,73 @@ export default function UserForm() {
     },
   });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const formSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+  });
 
-    addUser.mutate({ id, name });
-  };
+  const form = useForm<z.infer<typeof formSchema>>({
+    defaultValues: {
+      id: 1,
+      name: "John Doe",
+    },
+    resolver: zodResolver(formSchema),
+  });
+
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    console.log(data);
+    try {
+      await addUser.mutateAsync(data);
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   return (
-    <form
-      className="flex w-1/2 flex-col space-y-4 rounded-md border p-4 py-4"
-      onSubmit={handleSubmit}
-    >
-      <label htmlFor="name">Name</label>
-      <input
-        type="text"
-        id="name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="rounded border p-1.5"
-      />
-      <label htmlFor="id">ID</label>
-      <input
-        type="text"
-        id="id"
-        value={id}
-        onChange={(e) => setId(Number(e.target.value))}
-        className="rounded border p-1.5"
-      />
-      <Button disabled={addUser.isPending} type="submit">
-        {addUser.isPending ? "Submitting..." : "Submit"}
-      </Button>
-    </form>
+    <div className="mx-auto my-4 w-1/4 rounded-md border bg-card p-6 shadow-md">
+      <Form {...form}>
+        <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <FormField
+            name="id"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    {...field}
+                    autoComplete="off"
+                    placeholder="Enter your id"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="name"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    {...field}
+                    autoComplete="off"
+                    placeholder="Enter your name"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            className="w-full"
+            type="submit"
+            disabled={form.formState.isSubmitting}
+          >
+            {form.formState.isSubmitting ? "Submitting..." : "Submit"}
+          </Button>
+        </form>
+      </Form>
+    </div>
   );
 }
