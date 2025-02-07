@@ -11,7 +11,9 @@ const config = {
   },
   eslint: {
     ignoreDuringBuilds: true
-  }
+  },
+  output: "standalone",
+  env: {}
 };
 
 export default config;

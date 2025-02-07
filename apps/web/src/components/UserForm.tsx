@@ -18,7 +18,7 @@ export default function UserForm() {
   const utils = api.useUtils();
   const addUser = api.user.addUser.useMutation({
     onSettled: () => {
-      utils.user.getUsers.invalidate();
+      utils.user.getUsers.refetch();
     },
   });
 
