@@ -13,7 +13,6 @@ const config = {
     ignoreDuringBuilds: true
   },
   output: "standalone",
-  env: {}
 };
 
 export default config;
