@@ -1,30 +1,21 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../init";
-
-const users = [
-  { id: 1, name: "John Doe" },
-  { id: 2, name: "Jane Doe" },
-];
-
+import { userRepository } from "../repository";
 
 export const userRouter = createTRPCRouter({
-  
-  getUsers: publicProcedure.query(() => {
-    return users;
+  getUsers: publicProcedure.query(async () => {
+    return await userRepository.getUsers();
   }),
 
   addUser: publicProcedure
     .input(
       z.object({
-        id: z.number(),
         name: z.string(),
+        email: z.string().email(),
       })
     )
-    .mutation(({ input: { id, name } }) => {
-
-      console.log({ id, name });
-
-      users.push({ id, name });
+    .mutation(({ input: { name, email } }) => {
+      return userRepository.addUser({ name, email });
 
       // return { id, name };
     }),

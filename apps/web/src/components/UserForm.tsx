@@ -20,17 +20,21 @@ export default function UserForm() {
     onSettled: async () => {
       await utils.user.getUsers.invalidate();
     },
+    onError: async (error) => {
+      // TODO: show a toast
+      console.error(error);
+    },
   });
 
   const formSchema = z.object({
-    id: z.number(),
     name: z.string(),
+    email: z.string().email(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
-      id: 1,
       name: "John Doe",
+      email: "john@example.com",
     },
     resolver: zodResolver(formSchema),
   });
@@ -49,22 +53,6 @@ export default function UserForm() {
       <Form {...form}>
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
-            name="id"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    {...field}
-                    autoComplete="off"
-                    placeholder="Enter your id"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
             name="name"
             control={form.control}
             render={({ field }) => (
@@ -74,6 +62,23 @@ export default function UserForm() {
                     {...field}
                     autoComplete="off"
                     placeholder="Enter your name"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="email"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    {...field}
+                    autoComplete="off"
+                    placeholder="Enter your email"
+                    type="email"
                   />
                 </FormControl>
                 <FormMessage />

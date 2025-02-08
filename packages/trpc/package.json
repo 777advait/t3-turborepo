@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
+    "@repo/db": "workspace:*",
     "@trpc/server": "11.0.0-rc.645",
     "react": "^18.3.1",
     "superjson": "^2.2.1",
